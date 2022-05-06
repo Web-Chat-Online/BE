@@ -5,6 +5,7 @@ function generateAuthToken(user) {
     return jwt.sign(
         {
             id: user.id,
+            role: user.role,
         },
         process.env.JWT_TOKEN,
         { expiresIn: "365d" }
@@ -38,25 +39,32 @@ module.exports.register = async (req, res, next) => {
 module.exports.login = async (req, res, next) => {
     try {
         const { username, password } = req.body;
-        const user = await User.findOne({ username });
-        if (!user)
+        const users = await User.findOne({ username });
+        if (!users)
             return res.json({
                 message: "Incorrect username or password.",
                 status: false,
             });
-        const isPasswordValid = await brcypt.compare(password, user.password);
+        const isPasswordValid = await brcypt.compare(password, users.password);
         if (!isPasswordValid)
             return res.json({
                 message: "Incorrect username or password.",
                 status: false,
             });
-        delete user.password;
-        // const accessToken = generateAuthToken(userone);
-        // const user = await User.findByIdAndUpdate(
-        //     { _id: userone.id },
-        //     { token: accessToken },
-        //     { new: true }
-        // ).select(["email", "username", "avatarImage", "_id", "token"]);
+        const accessToken = generateAuthToken(users);
+        const user = await User.findByIdAndUpdate(
+            { _id: users.id },
+            { token: accessToken },
+            { new: true }
+        ).select([
+            "email",
+            "username",
+            "avatarImage",
+            "_id",
+            "token",
+            "role",
+            "isAvatarImageSet",
+        ]);
         return res.json({ status: true, user });
     } catch (error) {
         next();
