@@ -7,22 +7,11 @@ const messageRouter = require("./routers/messageRoutes");
 const app = express();
 const socket = require("socket.io");
 require("dotenv").config();
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: "*", methods: ["GET", "DELETE", "POST", "PUT"] }));
 app.use(function (req, res, next) {
-    res.setHeader(
-        "Access-Control-Allow-Origin",
-        "https://app-chat-fe.herokuapp.com"
-    );
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-    );
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "X-Requested-With,content-type"
-    );
-    res.setHeader("Access-Control-Allow-Credentials", true);
-
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
 });
 app.use(express.urlencoded({ extended: true }));
@@ -49,8 +38,7 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
     cors: {
-        origin: "https://app-chat-fe.herokuapp.com",
-        methods: ["GET", "POST"],
+        origin: "http://localhost:3000",
         credentials: true,
     },
 });
