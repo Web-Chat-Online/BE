@@ -8,8 +8,12 @@ const app = express();
 const socket = require("socket.io");
 require("dotenv").config();
 app.use(cors({ origin: "*", methods: ["GET", "DELETE", "POST", "PUT"] }));
+app.options("*", cors());
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Origin",
+        "https://singular-sundae-fa54f8.netlify.app"
+    );
     res.header("Access-Control-Allow-Methods", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
