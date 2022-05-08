@@ -7,23 +7,6 @@ const messageRouter = require("./routers/messageRoutes");
 const app = express();
 const socket = require("socket.io");
 require("dotenv").config();
-app.use(cors({ origin: "*", methods: ["GET", "DELETE", "POST", "PUT"] }));
-app.options("*", cors());
-app.use(function (req, res, next) {
-    res.header(
-        "Access-Control-Allow-Origin",
-        "https://singular-sundae-fa54f8.netlify.app"
-    );
-    res.header("Access-Control-Allow-Methods", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
-    next();
-});
-app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(bodyParser.json());
-app.use("/api/auth", userRouter);
-app.use("/api/messages", messageRouter);
 mongoose
     .connect(process.env.MONGO_URL, {
         useNewUrlParser: true,
@@ -35,6 +18,19 @@ mongoose
     .catch((err) => {
         console.log(err.message);
     });
+
+app.use(cors({ origin: "*", credentials: true }));
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    next();
+});
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(bodyParser.json());
+app.use("/api/auth", userRouter);
+app.use("/api/messages", messageRouter);
 
 const server = app.listen(process.env.PORT, () => {
     console.log(`Server Started on Port ${process.env.PORT}`);
