@@ -19,7 +19,7 @@ mongoose
         console.log(err.message);
     });
 
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: ["*", "https://singular-sundae-fa54f8.netlify.app/"] }));
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "*");
