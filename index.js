@@ -25,16 +25,16 @@ const configOrigin = {
 };
 app.use(cors(configOrigin));
 app.options("*", cors(configOrigin));
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
-    next();
-});
+// app.use(function (req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Methods", "*");
+//     res.header("Access-Control-Allow-Headers", "Content-Type");
+//     next();
+// });
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
-app.use("/api/auth", userRouter);
+app.use("/api/auth", cors(configOrigin), userRouter);
 app.use("/api/messages", messageRouter);
 
 const server = app.listen(process.env.PORT, () => {
